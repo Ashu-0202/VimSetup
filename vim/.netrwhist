@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =5
+let g:netrw_dirhist_5='/home/ashu/Desktop/VSCODE/VideoBot/backend/database'
+let g:netrw_dirhist_4='/home/ashu/.config/gcloud/logs/2023.12.19'
+let g:netrw_dirhist_3='/home/ashu/.config/gcloud/logs'
+let g:netrw_dirhist_2='/home/ashu/.config/gcloud/configurations'
+let g:netrw_dirhist_1='/home/ashu/.config/gcloud/legacy_credentials'
