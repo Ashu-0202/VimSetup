@@ -1,0 +1,32 @@
+snippet TRIE
+struct Node {
+    Node* arr[26];
+    int end;
+    Node() {
+        end = 0;
+        for(int i = 0; i < 26; i++) arr[i] = NULL;
+    }
+};
+void Insert(string s, Node* root) {
+    Node* r = root;
+    for (int i = 0; i < int(s.size()); i++) {
+        if (r->arr[s[i] - 'a'] == NULL) {
+            r->arr[s[i] - 'a'] = new Node();
+        }
+        r = r->arr[s[i] - 'a'];
+        r->end++;
+    }
+}
+
+ll Query(string s, Node* root) {
+    ll ans = 0;
+    Node* r = root;
+    for (int i = 0; i < int(s.size()); i++) {
+        if (r->arr[s[i] - 'a'] == NULL) break;
+        r = r->arr[s[i] - 'a'];
+        ans += r -> end;
+    }
+    return ans;
+}
+
+endsnippet

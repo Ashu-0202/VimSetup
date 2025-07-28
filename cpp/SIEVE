@@ -1,0 +1,17 @@
+snippet SIEVE
+const int maxn = 2e5 + 1;
+vector<int> spf(maxn + 1, 1), a;
+vector<bool> prime(maxn, 1);
+void sieve() {
+    prime[0] = prime[1] = 0;
+    for (int i = 2; i < maxn ; i++) {
+        if (prime[i]) a.push_back(i), spf[i] = i;
+        if (prime[i] && i <= maxn / i) {
+            for (int j = i * i; j < maxn ; j += i) {
+                prime[j] = 0;
+                spf[j] = i;
+            }
+        }
+    }
+}
+endsnippet

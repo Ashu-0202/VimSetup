@@ -1,0 +1,61 @@
+snippet HASH
+
+const vector<int> md = {int(1e9 + 7), int(1e9 + 9)};
+vector<int> pfc;
+seed_seq seq {
+    (uint64_t) chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now().time_since_epoch()).count(),
+    (uint64_t) __builtin_ia32_rdtsc(),
+    (uint64_t) (uintptr_t) make_unique<char>().get()
+};
+mt19937 rng(seq);
+
+struct HASH {
+private:
+    vector<int> fhash;
+    int inv_size, n, md_sz;
+    vector<vector<int>> hashes, invp;
+
+public:
+    HASH(int n_, int sz = 1) : n(n_), inv_size(sz) {
+        md_sz = int(md.size());
+        if (pfc.empty()) for (int i = 0; i < n; i++)
+                pfc.push_back(uniform_int_distribution<int>(0, md[i % md_sz] - 1)(rng));
+        fhash.resize(n);
+        hashes.resize(n); invp.resize(n);
+    }
+    void genHash(const string &s) {
+        inv_size = int(s.size());
+        for (int i = 0; i < n; i++) {
+            hashes[i].push_back(0);
+            int p = 1;
+            invp[i].push_back(mod_inv(power(pfc[i], inv_size - 1, md[i % md_sz]), md[i % md_sz]));
+
+            for (auto &x : s) {
+                int nh = ((x - 'a' + 1) * 1LL * p) % md[i % md_sz];
+                hashes[i].push_back((hashes[i].back() + nh) % md[i % md_sz]);
+                p = (p * 1LL * pfc[i]) % md[i % md_sz];
+                invp[i].push_back((pfc[i] * 1LL * invp[i].back()) % md[i % md_sz]);
+            }
+
+            fhash[i] = hashes[i].back();
+            invp[i].pop_back();
+        }
+    }
+
+    vector<int> getHash(const int l, const int r) {
+        vector<int> res(n, 0);
+        for (int i = 0; i < n; i++) {
+            res[i] = (hashes[i][r] - hashes[i][l - 1] + md[i % md_sz]) % md[i % md_sz];
+            res[i] = (res[i] * 1LL * invp[i][inv_size - l]) % md[i % md_sz];
+        }
+        return res;
+    }
+
+    bool operator==(const HASH &b) {
+        for (int i = 0; i < n; i++) if (fhash[i] != b.fhash[i])
+                return false;
+        return true;
+    }
+};
+
+endsnippet
